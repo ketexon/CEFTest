@@ -7,7 +7,8 @@ set(CEFTEST_ASSET_DIR ${CMAKE_SOURCE_DIR}/assets)
 set(
 	CEFTEST_SRC
 	Main.cpp
-	BrowserApp.hpp WindowDelegate.hpp
+	BrowserApp.hpp BrowserApp.cpp
+	WindowDelegate.hpp
 	Client.hpp Client.cpp
 	Framework.hpp
 )

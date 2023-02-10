@@ -8,6 +8,10 @@
 
 #include <include/cef_keyboard_handler.h>
 
+namespace VK {
+	constexpr int R = 0x52;
+}
+
 class Client
 	: public CefClient,
 	public CefDisplayHandler,
@@ -45,8 +49,7 @@ public:
 	void OnBeforeClose(CefRefPtr<CefBrowser> browser) override;
 
 	/*--------CefKeyboardHandler-------*/
-	bool OnKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent &event, CefEventHandle osEvent);
-
+	bool OnKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent &event, CefEventHandle osEvent) override;
 private:
 	std::vector<CefRefPtr<CefBrowser>> browsers;
 

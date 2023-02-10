@@ -17,7 +17,9 @@ int wWinMain(
 
 	CefMainArgs mainArgs{hInstance};
 
-	int exitCode = CefExecuteProcess(mainArgs, nullptr, nullptr);
+	CefRefPtr<CefApp> app = new BrowserApp{};
+
+	int exitCode = CefExecuteProcess(mainArgs, app, nullptr);
 	if(exitCode >= 0){
 		return exitCode;
 	}
@@ -32,8 +34,6 @@ int wWinMain(
 	}
 
 	CefSettings settings;
-
-	CefRefPtr<CefApp> app = new BrowserApp{};
 
 	CefInitialize(mainArgs, settings, app, nullptr);
 	CefRunMessageLoop();

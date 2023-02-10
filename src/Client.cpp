@@ -52,7 +52,7 @@ void Client::OnBeforeClose(CefRefPtr<CefBrowser> closingBrowser) {
 
 bool Client::OnKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent &event, CefEventHandle osEvent){
 	if(event.type == KEYEVENT_RAWKEYDOWN){
-		if(event.windows_key_code == VK_F5 && event.modifiers & EVENTFLAG_CONTROL_DOWN){
+		if(event.windows_key_code == VK::R && event.modifiers & EVENTFLAG_CONTROL_DOWN){
 			std::cout << "REFRESH" << std::endl;
 			browser->Reload();
 		}
