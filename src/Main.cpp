@@ -22,6 +22,8 @@ const std::map<std::string, std::string> ProcessTypeConsoleTitleMap {
 	{"renderer", "Renderer"},
 };
 
+constexpr bool AllocConsolesForAllProcesses = false;
+
 int wWinMain(
   __in HINSTANCE hInstance,
   __in HINSTANCE hPrevInstance,
@@ -55,6 +57,16 @@ int wWinMain(
 			freopen_s(&file, "CONOUT$", "w", stderr);
 
 			SetConsoleTitleA(ProcessTypeConsoleTitleMap.at(processType).c_str());
+		}
+		else if constexpr (AllocConsolesForAllProcesses){
+			AllocConsole();
+
+			FILE *file = nullptr;
+			freopen_s(&file,"CONIN$", "r", stdin);
+			freopen_s(&file, "CONOUT$", "w", stdout);
+			freopen_s(&file, "CONOUT$", "w", stderr);
+
+			SetConsoleTitleA(processType.c_str());
 		}
 	}
 

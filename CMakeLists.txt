@@ -18,6 +18,8 @@ set(
 
 	V8/TestBinding.hpp
 	V8/Bindings.cpp
+
+	SchemeHandler.hpp SchemeHandler.cpp
 )
 
 list(TRANSFORM CEFTEST_SRC PREPEND src/)
@@ -62,13 +64,6 @@ find_package(CEF REQUIRED)
 add_subdirectory(${CEF_LIBCEF_DLL_WRAPPER_PATH} libcef_dll_wrapper)
 
 ########### END CEF ############
-
-########### OTHER THIRD PARTY ###########
-
-add_subdirectory(extern/spdlog)
-
-########### END OTHER THIRD PARTY ##########
-
 ########### CEFTEST ############
 
 add_executable(
@@ -93,6 +88,31 @@ target_compile_definitions(
 	PUBLIC UNICODE _UNICODE
 )
 
+##### THIRD PARTY #####
+
+add_subdirectory(extern/spdlog)
+
+add_subdirectory(extern/CxxUrl)
+
+install(TARGETS CxxUrl)
+
+# add_dependencies(
+# 	CEFTest
+# 	CxxUrl
+# )
+
+target_link_libraries(
+	CEFTest
+	PRIVATE CxxUrl
+)
+
+target_link_libraries(
+	CEFTest
+	PRIVATE spdlog::spdlog
+)
+
+##### OTHER THIRD PARTY #####
+
 set(TARGET_OUT_DIR "$<TARGET_FILE_DIR:CEFTest>")
 
 ADD_LOGICAL_TARGET("libcef_lib" "${CEF_LIB_DEBUG}" "${CEF_LIB_RELEASE}")
@@ -106,8 +126,7 @@ add_dependencies(
 
 target_link_libraries(
 	CEFTest
-	libcef_lib libcef_dll_wrapper
-	${CEF_STANDARD_LIBS}
+	PRIVATE libcef_lib libcef_dll_wrapper ${CEF_STANDARD_LIBS}
 )
 
 list(REMOVE_ITEM CEF_CXX_COMPILER_FLAGS "/std:c++17")

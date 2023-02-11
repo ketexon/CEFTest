@@ -1,3 +1,6 @@
 [submodule "extern/spdlog"]
 	path = extern/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "extern/CxxUrl"]
+	path = extern/CxxUrl
+	url = https://github.com/chmike/CxxUrl
