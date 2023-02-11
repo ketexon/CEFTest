@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.24)
 
 project(CEFTest)
 
+######### CONFIG ##########
+
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
+
 set(CEFTEST_ASSET_DIR ${CMAKE_SOURCE_DIR}/assets)
 
 set(
@@ -11,6 +15,9 @@ set(
 	WindowDelegate.hpp
 	Client.hpp Client.cpp
 	Framework.hpp
+
+	V8/TestBinding.hpp
+	V8/Bindings.cpp
 )
 
 list(TRANSFORM CEFTEST_SRC PREPEND src/)
@@ -22,11 +29,13 @@ set(
 
 list(TRANSFORM CEFTEST_PRECOMPILED_HEADERS PREPEND src/)
 
+# CEF
+
 set(CEF_VERSION "110.0.25+g75b1c96+chromium-110.0.5481.78")
 
-# END CONFIG
+######## END CONFIG #########
 
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
+######## CEF #########
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
@@ -52,9 +61,26 @@ list(APPEND CMAKE_MODULE_PATH "${CEF_ROOT}/cmake")
 find_package(CEF REQUIRED)
 add_subdirectory(${CEF_LIBCEF_DLL_WRAPPER_PATH} libcef_dll_wrapper)
 
+########### END CEF ############
+
+########### OTHER THIRD PARTY ###########
+
+add_subdirectory(extern/spdlog)
+
+########### END OTHER THIRD PARTY ##########
+
+########### CEFTEST ############
+
 add_executable(
 	CEFTest WIN32
 	${CEFTEST_SRC}
+)
+
+set_target_properties(
+	CEFTest
+	PROPERTIES
+	CXX_STANDARD 20
+	CXX_STANDARD_REQUIRED TRUE
 )
 
 target_precompile_headers(
@@ -84,7 +110,15 @@ target_link_libraries(
 	${CEF_STANDARD_LIBS}
 )
 
+list(REMOVE_ITEM CEF_CXX_COMPILER_FLAGS "/std:c++17")
+list(APPEND CEF_CXX_COMPILER_FLAGS "/std:c++20")
+
 SET_EXECUTABLE_TARGET_PROPERTIES(CEFTest)
+
+target_compile_definitions(
+	CEFTest
+	PUBLIC $<IF:$<CONFIG:Debug>,CEFTEST_DBG_APP_DIR="${CEFTEST_ASSET_DIR}",>
+)
 
 add_custom_command(
 	TARGET CEFTest

@@ -1,19 +1,10 @@
 <!doctype html>
-<html lang="en" dir="ltr" class="">
+<html lang="en" dir="ltr">
 	<head>
 		<title>Test App</title>
 		<meta charset="UTF-8"/>
-	</head>
+	<script defer src="App.js"></script></head>
 	<body>
-		<div>
-			Hello
-		</div>
-		<script>
-			setTimeout(() => {
-				document.getElementsByTagName("div")[0].innerHTML = "Bye"
-			}, 1000);
-
-			testFunction();
-		</script>
+		<div id="root"></div>
 	</body>
 </html>

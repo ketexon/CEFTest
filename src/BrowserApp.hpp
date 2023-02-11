@@ -16,7 +16,6 @@
 class BrowserApp
 	: public CefApp,
 	public CefBrowserProcessHandler,
-	public CefV8Handler,
 	public CefRenderProcessHandler
 {
 public:
@@ -39,16 +38,20 @@ public:
 		CefBrowserSettings browserSettings {};
 		CefString startupURL;
 
+#ifndef CEFTEST_DBG_APP_DIR
 		char exePathStr[MAX_PATH + 1];
 		if(GetModuleFileNameA(NULL, exePathStr, MAX_PATH + 1) == 0){
 			std::cout << "Could not get module file name." << std::endl;
+			return;
 		}
-		else{
-			std::filesystem::path exePath{exePathStr};
-			startupURL.FromString(
-				(exePath.parent_path() / "App" / "index.html").string()
-			);
-		}
+		std::filesystem::path exePath{exePathStr};
+		std::filesystem::path appDir = exePath.parent_path();
+#else
+		std::filesystem::path appDir = CEFTEST_DBG_APP_DIR;
+#endif
+		startupURL.FromString(
+			(appDir / "App" / "index.html").string()
+		);
 
 		CefRefPtr<CefBrowserView> browserView = CefBrowserView::CreateBrowserView(
 			client,
@@ -58,15 +61,6 @@ public:
 		);
 		CefWindow::CreateTopLevelWindow(new WindowDelegate(browserView));
 	}
-
-	/*--------CefV8Handler------------*/
-	bool Execute(
-		const CefString &name,
-		CefRefPtr<CefV8Value> object,
-		const CefV8ValueList &arguments,
-		CefRefPtr<CefV8Value> &retval,
-		CefString &exception
-	) override;
 
 	/*---------CefRenderProcessHandler--------*/
 	void OnContextCreated(
